@@ -11,9 +11,9 @@ namespace Bl
             Iteration = iteration;
         }
 
-        public double LeftBound { get; }
-        public double RightBound { get; }
-        public int Iteration { get; }
+        public double LeftBound { get; set; }
+        public double RightBound { get; set; }
+        public int Iteration { get; set; }
     }
 
     public class UnconditionalOptimization
@@ -37,14 +37,9 @@ namespace Bl
         /// <param name="maxIterations">Maximum iteration count</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public (double LeftBound, double RightBound) GetBoundForMinimization(
-            double startPoint,
-            double step,
-            int maxIterations = 1000)
-        {
-            return GetBoundInternal(startPoint, step, true, maxIterations);
-        }
-
+        public (double LeftBound, double RightBound) GetBoundForMinimization(double startPoint, double step,
+            int maxIterations = 1000) => GetBoundInternal(startPoint, step, true, maxIterations);
+        
         /// <summary>
         /// Get bound for Minimization
         /// </summary>
@@ -53,21 +48,13 @@ namespace Bl
         /// <param name="maxIterations">Maximum iteration count</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public (double LeftBound, double RightBound) GetBoundForMaximization(
-            double startPoint,
-            double step,
-            int maxIterations = 1000)
-        {
-            return GetBoundInternal(startPoint, step, false, maxIterations);
-        }
-
+        public (double LeftBound, double RightBound) GetBoundForMaximization(double startPoint, double step,
+            int maxIterations = 1000) => GetBoundInternal(startPoint, step, false, maxIterations);
+        
         #region Private helpers
 
-        private (double LeftBound, double RightBound) GetBoundInternal(
-            double startPoint,
-            double step,
-            bool minimization,
-            int maxIterations)
+        private (double LeftBound, double RightBound) GetBoundInternal(double startPoint, double step,
+            bool minimization, int maxIterations)
         {
             // Get initial range
             var innerPoint = startPoint;
@@ -88,7 +75,7 @@ namespace Bl
 
             var direction = getDirection(leftPoint, innerPoint);
 
-            for (int iteration = 1; iteration < maxIterations; iteration++)
+            for (int iteration = 0; iteration < maxIterations; iteration++)
             {
                 // If function changed direction, then found extremum
                 if (direction != getDirection(leftPoint, rightPoint))
@@ -122,11 +109,7 @@ namespace Bl
 
         #endregion
 
-        private enum Direction
-        {
-            Left,
-            Right
-        }
+        private enum Direction { Left, Right }
 
         private delegate Direction DirectionDelegate(double leftBound, double rightBound);
 
