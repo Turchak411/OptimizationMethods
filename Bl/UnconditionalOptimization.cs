@@ -75,7 +75,7 @@ namespace Bl
 
             var direction = getDirection(leftPoint, innerPoint);
 
-            for (int iteration = 1; iteration < maxIterations; iteration++)
+            for (int iteration = 0; iteration < maxIterations; iteration++)
             {
                 // If function changed direction, then found extremum
                 if (direction != getDirection(leftPoint, rightPoint))
