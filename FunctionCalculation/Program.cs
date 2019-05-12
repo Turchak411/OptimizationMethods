@@ -14,14 +14,21 @@ namespace FunctionCalculation
         {
             var optimization = new UnconditionalOptimization(MinimizationFunction);
             var (leftBound, rightBound) = optimization.GetBoundForMinimization(startPoint, h);
-            Console.WriteLine("Первичные границы: [{0}; {1}]", leftBound, rightBound);
+            Console.WriteLine("Первичные границы: [{0:f3}; {1:f3}]", leftBound, rightBound);
 
             Console.WriteLine("///Уточнение границ методом деления пополам///");
             var halvingMethod = new HalvingMethod(MinimizationFunction);
             var result = halvingMethod.Calculation(leftBound, rightBound);
-            Console.WriteLine("Границы: [{0}; {1}] Итераций = {2}", halvingMethod.LeftBound,
+            Console.WriteLine("Границы: [{0:f3}; {1:f3}] Итераций = {2}", halvingMethod.LeftBound,
                                                halvingMethod.RightBound, halvingMethod.Iteration);
             Console.WriteLine("x = {0:f3}\nЗначение функции {1:f3}", result, MinimizationFunction(result));
+
+            Console.WriteLine("///Уточнение метом квадратичной апроксимации///");
+            var approximationMethod = new ApproximationMethod(MinimizationFunction);
+            var r = approximationMethod.Calculation(leftBound, rightBound, 0.001);
+            Console.WriteLine("Границы: [{0:f3}; {1:f3}] Итераций = {2}", approximationMethod.LeftBound, 
+                                    approximationMethod.RightBound, approximationMethod.Iteration);
+            Console.WriteLine("x= {0:f3}\nЗначение функции {1:f3}", r, MinimizationFunction(r));
             Console.ReadKey();
         }
     }
