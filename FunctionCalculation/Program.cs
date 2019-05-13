@@ -25,7 +25,7 @@ namespace FunctionCalculation
 
             Console.WriteLine("///Уточнение метом квадратичной апроксимации///");
             var approximationMethod = new ApproximationMethod(MinimizationFunction);
-            var r = approximationMethod.Calculation(leftBound, rightBound, 0.001);
+            var r = approximationMethod.Calculation(halvingMethod.LeftBound, halvingMethod.RightBound);
             Console.WriteLine("Границы: [{0:f3}; {1:f3}] Итераций = {2}", approximationMethod.LeftBound, 
                                     approximationMethod.RightBound, approximationMethod.Iteration);
             Console.WriteLine("x= {0:f3}\nЗначение функции {1:f3}", r, MinimizationFunction(r));

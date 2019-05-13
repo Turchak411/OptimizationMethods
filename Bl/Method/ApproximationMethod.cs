@@ -53,7 +53,7 @@ namespace Bl.Method
                 new FunctionData(rightBound, _f(rightBound))
             };
 
-            var count = 0;
+            var count = 1;
             double middleX;
 
             do
