@@ -12,7 +12,7 @@ namespace Bl
             _function = function;
         }
 
-        public double FindMin(double a, double b, double e)
+        public (double LeftBound, double RightBound) FindMin(double a, double b, double e)
         {
             double x1, x2;
             while (true)
@@ -26,7 +26,7 @@ namespace Bl
                 if (Math.Abs(b - a) < e)
                     break;
             }
-            return (a + b) / 2;
+            return (LeftBound: a, RightBound: b);
         }
 
         public double FindMax(double a, double b, double e)
