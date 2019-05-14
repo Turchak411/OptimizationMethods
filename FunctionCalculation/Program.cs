@@ -16,25 +16,33 @@ namespace FunctionCalculation
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Начальная точка X0 = {0}; h = {1}", startPoint, h);
+
             var optimization = new UnconditionalOptimization(MinimizationFunction);
+            optimization.OnIteration += Print_OnIteration;
             var (leftBound, rightBound) = optimization.GetBoundForMinimization(startPoint, h);
-            Console.WriteLine("Первичные границы: [{0:f3}; {1:f3}]", leftBound, rightBound);
+            PrintBoundaries(leftBound,rightBound, optimization.Iteration);
 
-            Console.WriteLine("///Уточнение границ методом деления пополам///");
+            Console.ReadKey();
+            Console.WriteLine("\n///Уточнение границ методом деления пополам///");
+
             var halvingMethod = new HalvingMethod(MinimizationFunction);
-            var result = halvingMethod.Calculation(leftBound, rightBound);
-            Console.WriteLine("Границы: [{0:f3}; {1:f3}] Итераций = {2}", halvingMethod.LeftBound,
-                                               halvingMethod.RightBound, halvingMethod.Iteration);
-            Console.WriteLine("x = {0:f3}\nЗначение функции {1:f3}", result, MinimizationFunction(result));
+            halvingMethod.OnIteration += Print_OnIteration;
+            var resultHalving = halvingMethod.Calculation(leftBound, rightBound);
+            PrintBoundaries(halvingMethod.LeftBound, halvingMethod.RightBound, halvingMethod.Iteration);
+            PrintFunction(resultHalving, MinimizationFunction);
 
-            Console.WriteLine("///Уточнение метом квадратичной апроксимации///");
+            Console.ReadKey();
+            Console.WriteLine("\n///Уточнение метом квадратичной аппроксимации///");
+
             var approximationMethod = new ApproximationMethod(MinimizationFunction);
-            var r = approximationMethod.Calculation(halvingMethod.LeftBound, halvingMethod.RightBound);
-            Console.WriteLine("Границы: [{0:f3}; {1:f3}] Итераций = {2}", approximationMethod.LeftBound, 
-                                    approximationMethod.RightBound, approximationMethod.Iteration);
-            Console.WriteLine("x= {0:f3}\nЗначение функции {1:f3}", r, MinimizationFunction(r));
+            approximationMethod.OnIteration += Print_OnIteration;
+            var resultApproximation = approximationMethod.Calculation(halvingMethod.LeftBound, 3.75);
+            PrintBoundaries(approximationMethod.LeftBound, approximationMethod.RightBound, approximationMethod.Iteration);
+            PrintFunction(resultApproximation, MinimizationFunction);
 
-            Console.WriteLine("///Метод Ньютона///");
+            Console.ReadKey();
+            Console.WriteLine("\n///Метод Ньютона///");
             var newtonMethod = new NewtonMethod(FunctionD1, FunctionD2);
             var resultNewtonMethod = newtonMethod.Calculation(startPoint);
             Console.WriteLine("x = {0:f3}\nЗначение функции {1:f3} Итераций = {2}",
@@ -42,5 +50,15 @@ namespace FunctionCalculation
 
             Console.ReadKey();
         }
+
+        private static void PrintFunction(double x, SingleVariableFunctionDelegate function) 
+            => Console.WriteLine("x = {0:f3}\tЗначение функции {1:f3}", x, function(x));
+
+        private static void PrintBoundaries(double leftBound, double rightBound, int iteration) 
+            => Console.WriteLine("Результат: [{0:f3}; {1:f3}] Итераций = {2}", leftBound, rightBound, iteration);
+
+        private static void Print_OnIteration(object sender, IterationInfoEventArgs infoEventArgs) 
+            => Console.WriteLine("Границы: [{0:f2}; {1:f2}]\tИтерация = {2}", infoEventArgs.LeftBound,
+                                                              infoEventArgs.RightBound, infoEventArgs.Iteration);
     }
 }

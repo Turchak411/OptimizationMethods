@@ -7,11 +7,15 @@
 
         private IterationInfoEventArgs _iterationInfoEventArgs;
 
+        public delegate void IterationInfoDelegate(object sender, IterationInfoEventArgs iterationInfoEventArgs);
+
         public NewtonMethod(SingleVariableFunctionDelegate functionD1, SingleVariableFunctionDelegate functionD2)
         {
             _fd1 = functionD1;
             _fd2 = functionD2;
         }
+
+        public event IterationInfoDelegate OnIteration;
 
         /// <summary>
         /// Вычисление методом Ньютона
@@ -22,14 +26,15 @@
         public IterationInfoEventArgs Calculation(double x1, double eps = 0.001)
         {
             double x2;
-            int count = 1;
+            int iteration = 1;
             do
             {
+                iteration++;
                 x2 = x1 - _fd1(x1) / _fd2(x1);
-                count++;
+                OnIteration?.Invoke(this, new IterationInfoEventArgs(x1, x2, iteration));
             }
             while (_fd1(x2) <= eps);
-            return new IterationInfoEventArgs(x1, x2, count);
+            return new IterationInfoEventArgs(x1, x2, iteration);
         }
     }
 }

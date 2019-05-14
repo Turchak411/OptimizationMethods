@@ -34,10 +34,14 @@ namespace Bl.Method
 
         private static double MiddleX(double x1, double x2, double a1, double a2) => (x1 + x2) / 2 - a1 / (2 * a2);
 
+        public delegate void IterationInfoDelegate(object sender, IterationInfoEventArgs iterationInfoEventArgs);
+
         public ApproximationMethod(SingleVariableFunctionDelegate function)
         {
             _f = function;
         }
+
+        public event IterationInfoDelegate OnIteration;
 
         /// <summary>
         /// Вычисление методом квадратичной апроксимации
@@ -53,9 +57,9 @@ namespace Bl.Method
                 new FunctionData(rightBound, _f(rightBound))
             };
 
-            var count = 1;
+            var iteration = 0;
             double middleX;
-
+            OnIteration?.Invoke(this, new IterationInfoEventArgs(leftBound, rightBound, iteration));
             do
             {
                 var x1 = functionDatas[0].Value;
@@ -74,10 +78,11 @@ namespace Bl.Method
                 middleX = MiddleX(x1, x2, a1, a2);
                 functionDatas.Remove(functionDatas.Max());
 
-                count++;
+                iteration++;
+                OnIteration?.Invoke(this, new IterationInfoEventArgs(functionDatas[0].Value, functionDatas[1].Value, iteration));
             } while (eps < Math.Abs((functionDatas.Min(f => f.FunctionValue) - _f(middleX)) / _f(middleX)));
 
-            _iterationInfoEventArgs = new IterationInfoEventArgs(functionDatas[0].Value, functionDatas[1].Value, count);
+            _iterationInfoEventArgs = new IterationInfoEventArgs(functionDatas[0].Value, functionDatas[1].Value, iteration);
 
             return middleX;
         }

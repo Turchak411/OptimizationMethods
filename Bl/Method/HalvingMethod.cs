@@ -4,8 +4,9 @@
     {
         private readonly SingleVariableFunctionDelegate _f;
 
-        private IterationInfoEventArgs _iterationInfoEventArgs;
+        private IterationInfoEventArgs _iterationInfoEventArgs; 
 
+        public delegate void IterationInfoDelegate(object sender, IterationInfoEventArgs iterationInfoEventArgs);
         /// <summary>
         /// Левая граница
         /// </summary>
@@ -19,7 +20,7 @@
         /// <summary>
         /// Кол-во итераций
         /// </summary>
-        public int Iteration => _iterationInfoEventArgs.Iteration;
+        public int Iteration => _iterationInfoEventArgs.Iteration-1;
 
         public double MiddleInterval(double leftBound, double rightBound) => (leftBound + rightBound) / 2;
 
@@ -47,6 +48,8 @@
             return RunIterations(_iterationInfoEventArgs, ref middleInterval);
         }
 
+        public event IterationInfoDelegate OnIteration;
+
         /// <summary>
         /// Выполнение итераций
         /// </summary>
@@ -63,6 +66,7 @@
             {
                 iterationInfo.RightBound = middleInterval;
                 middleInterval = x1;
+                OnIteration?.Invoke(this, iterationInfo);
                 iterationInfo.Iteration++;
                 RunIterations(iterationInfo, ref middleInterval);
             }
@@ -70,6 +74,7 @@
             {
                 iterationInfo.LeftBound = middleInterval;
                 middleInterval = x2;
+                OnIteration?.Invoke(this, iterationInfo);
                 iterationInfo.Iteration++;
                 RunIterations(iterationInfo, ref middleInterval);
             }

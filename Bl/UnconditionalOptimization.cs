@@ -75,15 +75,16 @@ namespace Bl
 
             var direction = getDirection(leftPoint, innerPoint);
 
-            // Made from scratch, otherwise the first step for h will be different (according to my calculations)!!!
-            for (int iteration = 0; iteration < maxIterations; iteration++)
+            OnIteration?.Invoke(this, new IterationInfoEventArgs(leftPoint, rightPoint, 1));
+
+            for (int iteration = 1; iteration < maxIterations; iteration++)
             {
                 // If function changed direction, then found extremum
                 if (direction != getDirection(leftPoint, rightPoint))
                     return (LeftBound: leftPoint, RightBound: rightPoint);
 
                 // Calculating step to shift range bounds
-                var h = Math.Pow(2, iteration + 1) * step;
+                var h = Math.Pow(2, iteration) * step;
 
                 // Set new bounds, depended of direction
                 // WARNING!!! Do not change position of set range
@@ -102,7 +103,7 @@ namespace Bl
                     leftPoint = innerPoint - h;
                 }
 
-                //Add iteration +1 if the iteration starts from zero!!!
+                Iteration = iteration + 1;
                 OnIteration?.Invoke(this, new IterationInfoEventArgs(leftPoint, rightPoint, iteration+1));
             }
 
@@ -110,6 +111,8 @@ namespace Bl
         }
 
         #endregion
+
+        public int Iteration { get; private set; }
 
         private enum Direction { Left, Right }
 
