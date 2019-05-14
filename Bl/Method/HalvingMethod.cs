@@ -42,7 +42,7 @@
         /// <returns>Средение значение x между границами</returns>
         public double Calculation(double leftBound, double rightBound)
         {
-            _iterationInfoEventArgs = new IterationInfoEventArgs(leftBound, rightBound, 0);
+            _iterationInfoEventArgs = new IterationInfoEventArgs(leftBound, rightBound, 1);
             var middleInterval = MiddleInterval(leftBound, rightBound);
             return RunIterations(_iterationInfoEventArgs, ref middleInterval);
         }

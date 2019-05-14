@@ -75,6 +75,7 @@ namespace Bl
 
             var direction = getDirection(leftPoint, innerPoint);
 
+            // Made from scratch, otherwise the first step for h will be different (according to my calculations)!!!
             for (int iteration = 0; iteration < maxIterations; iteration++)
             {
                 // If function changed direction, then found extremum
@@ -101,7 +102,8 @@ namespace Bl
                     leftPoint = innerPoint - h;
                 }
 
-                OnIteration?.Invoke(this, new IterationInfoEventArgs(leftPoint, rightPoint, iteration));
+                //Add iteration +1 if the iteration starts from zero!!!
+                OnIteration?.Invoke(this, new IterationInfoEventArgs(leftPoint, rightPoint, iteration+1));
             }
 
             throw new Exception($"Maximum number of iterations ({maxIterations}) reached");
