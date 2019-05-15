@@ -1,4 +1,6 @@
-﻿namespace Bl.Method
+﻿using System;
+
+namespace Bl.Method
 {
     public class NewtonMethod
     {
@@ -20,21 +22,24 @@
         /// <summary>
         /// Вычисление методом Ньютона
         /// </summary>
-        /// <param name="x1">Начальная точка</param>
+        /// <param name="start">Начальная точка</param>
         /// <param name="eps">Значение eps</param>
         /// <returns></returns>
-        public IterationInfoEventArgs Calculation(double x1, double eps = 0.001)
+        public double Calculation(double start, double eps = 0.001)
         {
-            double x2;
-            int iteration = 1;
+            double x1, dx;
+            int iteration = 0;
+            double x0 = start;
             do
             {
                 iteration++;
-                x2 = x1 - _fd1(x1) / _fd2(x1);
-                OnIteration?.Invoke(this, new IterationInfoEventArgs(x1, x2, iteration));
+                x1 = x0 - _fd1(x0) / _fd2(x0);
+                dx = Math.Abs(x1 - x0);
+                x0 = x1;
+                OnIteration?.Invoke(this, new IterationInfoEventArgs(x0, x1, iteration));
             }
-            while (_fd1(x2) <= eps);
-            return new IterationInfoEventArgs(x1, x2, iteration);
+            while (dx > eps);
+            return x1;
         }
     }
 }

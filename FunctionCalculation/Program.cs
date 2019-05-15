@@ -37,16 +37,16 @@ namespace FunctionCalculation
 
             var approximationMethod = new ApproximationMethod(MinimizationFunction);
             approximationMethod.OnIteration += Print_OnIteration;
-            var resultApproximation = approximationMethod.Calculation(halvingMethod.LeftBound, 3.75);
+            var resultApproximation = approximationMethod.Calculation(leftBound, rightBound);
             PrintBoundaries(approximationMethod.LeftBound, approximationMethod.RightBound, approximationMethod.Iteration);
             PrintFunction(resultApproximation, MinimizationFunction);
 
             Console.ReadKey();
             Console.WriteLine("\n///Метод Ньютона///");
             var newtonMethod = new NewtonMethod(FunctionD1, FunctionD2);
+            newtonMethod.OnIteration += Print_OnIteration;
             var resultNewtonMethod = newtonMethod.Calculation(startPoint);
-            Console.WriteLine("x = {0:f3}\nЗначение функции {1:f3} Итераций = {2}",
-                resultNewtonMethod.RightBound, MinimizationFunction(resultNewtonMethod.RightBound), resultNewtonMethod.Iteration);
+            PrintFunction(resultNewtonMethod, MinimizationFunction);
 
             Console.ReadKey();
         }
@@ -58,7 +58,7 @@ namespace FunctionCalculation
             => Console.WriteLine("Результат: [{0:f3}; {1:f3}] Итераций = {2}", leftBound, rightBound, iteration);
 
         private static void Print_OnIteration(object sender, IterationInfoEventArgs infoEventArgs) 
-            => Console.WriteLine("Границы: [{0:f2}; {1:f2}]\tИтерация = {2}", infoEventArgs.LeftBound,
+            => Console.WriteLine("Границы: [{0:f6}; {1:f6}]\tИтерация = {2}", infoEventArgs.LeftBound,
                                                               infoEventArgs.RightBound, infoEventArgs.Iteration);
     }
 }
