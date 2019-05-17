@@ -16,6 +16,8 @@ namespace FunctionCalculation
 
         static void Main(string[] args)
         {
+            double eps = 0.1;
+
             Console.WriteLine("Начальная точка X0 = {0}; h = {1}", startPoint, h);
 
             var optimization = new UnconditionalOptimization(MinimizationFunction);
@@ -28,16 +30,28 @@ namespace FunctionCalculation
 
             var halvingMethod = new HalvingMethod(MinimizationFunction);
             halvingMethod.OnIteration += Print_OnIteration;
-            var resultHalving = halvingMethod.Calculation(leftBound, rightBound, 0.001);
+            var resultHalving = halvingMethod.Calculation(leftBound, rightBound, eps);
            // PrintBoundaries(halvingMethod.LeftBound, halvingMethod.RightBound, halvingMethod.Iteration);
             PrintFunction(resultHalving, MinimizationFunction);
+            Console.ReadKey();
+
+            // Метод золотого сечения:
+            Console.WriteLine("\n > Уточнение методом золотого сечения:");
+            var goldenSection = new GoldenSection(MinimizationFunction);
+            goldenSection.OnIteration += Print_OnIteration;
+            var (leftBound1, rightBound1, iterations) = goldenSection.FindMin(leftBound, rightBound, eps);
+            Console.WriteLine("Границы: [{0:f3}; {1:f3}]\nИтераций = {2}", leftBound1,
+                                                                           rightBound1,
+                                                                           iterations);
+            Console.WriteLine("x = {0:f3}\nF(x) = {1:f3}", (leftBound1 + rightBound1) / 2,
+                                                           MinimizationFunction((leftBound1 + rightBound1) / 2));
 
             Console.ReadKey();
             Console.WriteLine("\n///Уточнение метом квадратичной аппроксимации///");
 
             var approximationMethod = new ApproximationMethod(MinimizationFunction);
             approximationMethod.OnIteration += Print_OnIteration;
-            var resultApproximation = approximationMethod.Calculation(leftBound, rightBound);
+            var resultApproximation = approximationMethod.Calculation(leftBound, rightBound, eps);
             PrintBoundaries(approximationMethod.LeftBound, approximationMethod.RightBound, approximationMethod.Iteration);
             PrintFunction(resultApproximation, MinimizationFunction);
 
@@ -45,7 +59,7 @@ namespace FunctionCalculation
             Console.WriteLine("\n///Метод Ньютона///");
             var newtonMethod = new NewtonMethod(FunctionD1, FunctionD2);
             newtonMethod.OnIteration += Print_OnIteration;
-            var resultNewtonMethod = newtonMethod.Calculation(20);
+            var resultNewtonMethod = newtonMethod.Calculation(startPoint, eps);
             PrintFunction(resultNewtonMethod, MinimizationFunction);
 
             Console.ReadKey();

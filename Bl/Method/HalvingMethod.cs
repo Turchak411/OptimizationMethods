@@ -67,16 +67,19 @@
                     b = middleInterval;
                     middleInterval = x1;
                 }
-                else if (_f(x2) < _f(middleInterval))
+                else if(_f(x1) >= _f(middleInterval))
                 {
-                    a = middleInterval;
-                    middleInterval = x2;
-                }
-                else if (_f(x2) >= _f(middleInterval) || _f(x1) >= _f(middleInterval))
-                {
-                    a = x1;
-                    b = x2;
-                }
+                    if (_f(x2) < _f(middleInterval))
+                    {
+                        a = middleInterval;
+                        middleInterval = x2;
+                    }
+                    else if (_f(x2) >= _f(middleInterval))
+                    {
+                        a = x1;
+                        b = x2;
+                    }
+                }  
 
                 err = (b-a) / len;
                 iteration++;
