@@ -28,8 +28,8 @@ namespace FunctionCalculation
 
             var halvingMethod = new HalvingMethod(MinimizationFunction);
             halvingMethod.OnIteration += Print_OnIteration;
-            var resultHalving = halvingMethod.Calculation(leftBound, rightBound);
-            PrintBoundaries(halvingMethod.LeftBound, halvingMethod.RightBound, halvingMethod.Iteration);
+            var resultHalving = halvingMethod.Calculation(leftBound, rightBound, 0.001);
+           // PrintBoundaries(halvingMethod.LeftBound, halvingMethod.RightBound, halvingMethod.Iteration);
             PrintFunction(resultHalving, MinimizationFunction);
 
             Console.ReadKey();
@@ -45,7 +45,7 @@ namespace FunctionCalculation
             Console.WriteLine("\n///Метод Ньютона///");
             var newtonMethod = new NewtonMethod(FunctionD1, FunctionD2);
             newtonMethod.OnIteration += Print_OnIteration;
-            var resultNewtonMethod = newtonMethod.Calculation(startPoint);
+            var resultNewtonMethod = newtonMethod.Calculation(20);
             PrintFunction(resultNewtonMethod, MinimizationFunction);
 
             Console.ReadKey();
